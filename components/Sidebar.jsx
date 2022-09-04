@@ -11,12 +11,11 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { collection, addDoc, query, where } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Chat from "./Chat";
+
 function sidebar() {
 	const [user] = useAuthState(auth);
 	const userChatRef = query(collection(db, "chats"), where("users", "array-contains", user.email));
-	console.log(userChatRef);
 	const [chatsSnapshot] = useCollection(userChatRef);
-	console.log(chatsSnapshot);
 
 	const createChat = () => {
 		const input = prompt("please enter an email for the user you wish to chat with");
@@ -44,7 +43,7 @@ function sidebar() {
 		<Container>
 			<Header>
 				<DivLeft>
-					<Avatar onClick={() => signOut(auth)} title="click to sign out 👋" style={{ cursor: "pointer" }} />
+					<Avatar src={user.photoURL} onClick={() => signOut(auth)} title="click to sign out 👋" style={{ cursor: "pointer" }} />
 				</DivLeft>
 				<DivRight>
 					<IconButton>
@@ -68,7 +67,7 @@ function sidebar() {
 			</StartChat>
 			<ChatsContainer>
 				{chatsSnapshot?.docs.map((chat) => (
-					<Chat key={chat.id} id={chat.id} user={chat.data().users} />
+					<Chat key={chat.id} id={chat.id} users={chat.data().users} />
 				))}
 			</ChatsContainer>
 		</Container>
