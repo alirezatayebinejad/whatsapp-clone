@@ -5,17 +5,41 @@ import ChatIcon from "@mui/icons-material/Chat";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import * as EmailValidator from "email-validator";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { signOut } from "firebase/auth";
-
+import { useAuthState } from "react-firebase-hooks/auth";
+import { collection, addDoc, query, where } from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
+import Chat from "./Chat";
 function sidebar() {
+	const [user] = useAuthState(auth);
+	const userChatRef = query(collection(db, "chats"), where("users", "array-contains", user.email));
+	console.log(userChatRef);
+	const [chatsSnapshot] = useCollection(userChatRef);
+	console.log(chatsSnapshot);
+
 	const createChat = () => {
 		const input = prompt("please enter an email for the user you wish to chat with");
 		if (!input) return null;
-		if (EmailValidator.validate(input)) {
+		if (EmailValidator.validate(input) && input !== user.email) {
 			//add chat into the DB 'chats' collection
+			if (!isChatExist(input)) {
+				(async () => {
+					await addDoc(collection(db, "chats"), {
+						users: [user.email, input],
+					});
+				})();
+			} else {
+				alert("the chat is already existed");
+			}
+		} else {
+			alert("it's not an email or unvalid email !");
 		}
 	};
+	const isChatExist = (reciepientEmail) => {
+		return !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === reciepientEmail)?.length);
+	};
+
 	return (
 		<Container>
 			<Header>
@@ -42,6 +66,11 @@ function sidebar() {
 			<StartChat onClick={createChat}>
 				<h5>START A NEW CHAT</h5>
 			</StartChat>
+			<ChatsContainer>
+				{chatsSnapshot?.docs.map((chat) => (
+					<Chat key={chat.id} id={chat.id} user={chat.data().users} />
+				))}
+			</ChatsContainer>
 		</Container>
 	);
 }
@@ -91,3 +120,5 @@ const StartChat = styled.div`
 		transition: 0.3s;
 	}
 `;
+
+const ChatsContainer = styled.div``;
