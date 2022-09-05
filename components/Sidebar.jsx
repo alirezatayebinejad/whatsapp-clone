@@ -32,7 +32,7 @@ function sidebar() {
 				alert("the chat is already existed");
 			}
 		} else {
-			alert("it's not an email or unvalid email !");
+			alert("it's not an email or unvalid email");
 		}
 	};
 	const isChatExist = (reciepientEmail) => {

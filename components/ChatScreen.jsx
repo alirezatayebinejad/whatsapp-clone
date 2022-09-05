@@ -76,7 +76,7 @@ function Chatscreen({ chat, messages }) {
 	return (
 		<Container>
 			<Header>
-				<Avatar />
+				{recipient ? <UserAvatar src={recipient?.photoURL} /> : <UserAvatar>{recipientEmail[0]}</UserAvatar>}
 
 				<HeaderInformation>
 					<h3>{recipientEmail}</h3>
@@ -131,6 +131,10 @@ const Header = styled.div`
 	height: 80px;
 	align-items: center;
 	border-bottom: 1px solid whitesmoke;
+`;
+const UserAvatar = styled(Avatar)`
+	margin: 5px;
+	margin-right: 15px;
 `;
 
 const HeaderInformation = styled.div`

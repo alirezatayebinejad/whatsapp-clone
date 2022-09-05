@@ -37,6 +37,7 @@ const Container = styled.div`
 	:hover {
 		background-color: #e9eaeb;
 	}
+	border-bottom: solid 1px #e9eaeb;
 `;
 const UserAvatar = styled(Avatar)`
 	margin: 5px;
