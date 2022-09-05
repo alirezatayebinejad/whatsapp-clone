@@ -8,7 +8,7 @@ import { doc, getDocs, getDoc, collection, query, orderBy } from "firebase/fires
 import getRecipientEmail from "../../utils/getRecipientEmail";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-function chatPage({ chat, messages }) {
+function ChatPage({ chat, messages }) {
 	const [user] = useAuthState(auth);
 
 	return (
@@ -24,7 +24,7 @@ function chatPage({ chat, messages }) {
 	);
 }
 
-export default chatPage;
+export default ChatPage;
 
 export async function getServerSideProps(context) {
 	const docRef = doc(db, `chats/${context.query.id}`);
